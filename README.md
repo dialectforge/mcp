@@ -72,6 +72,8 @@ A suite of specialized MCP servers that help you get the most out of AWS, wherev
       - [`.cursor/mcp.json`](#cursormcpjson)
     - [Getting Started with Windsurf](#getting-started-with-windsurf)
       - [`~/.codeium/windsurf/mcp_config.json`](#codeiumwindsurfmcp_configjson)
+    - [Getting Started with OpenCode](#getting-started-with-opencode)
+      - [`opencode.json`](#opencodejson)
     - [Getting Started with VS Code](#getting-started-with-vs-code)
       - [`.vscode/mcp.json`](#vscodemcpjson)
     - [Getting Started with Claude Code](#getting-started-with-claude-code)
@@ -911,6 +913,80 @@ For Windows:
   }
 }
 ```
+
+</details>
+
+### Getting Started with OpenCode
+
+<details>
+<summary>Install in OpenCode</summary>
+
+See the [OpenCode MCP documentation](https://opencode.ai/v2/docs/mcp-servers/) for details. These steps use the OpenCode 2 configuration format; OpenCode 1 places servers directly under `mcp` instead of `mcp.servers`.
+
+1. Follow the steps above in the **Installation and Setup** section to install `uv` from [Astral](https://docs.astral.sh/uv/getting-started/installation/), install Python, and configure AWS credentials with the required services.
+
+2. **Using OpenCode CLI commands**
+
+   ```bash
+   # Add a server to the current project (add --global to make it available in every project)
+   opencode mcp add aws-iac --env FASTMCP_LOG_LEVEL=ERROR -- uvx awslabs.aws-iac-mcp-server@latest
+
+   # List configured servers and their connection status
+   opencode mcp list
+   ```
+
+3. **Manual configuration (alternative)**
+
+   Add the servers under `mcp.servers` in `opencode.json` in your project root, or in `~/.config/opencode/opencode.json` for every project. OpenCode uses `type` to select the transport, a single `command` array holding the executable and its arguments, and `environment` rather than `env`.
+
+#### `opencode.json`
+
+For macOS/Linux:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "awslabs-core-mcp-server": {
+        "type": "local",
+        "command": ["uvx", "awslabs.core-mcp-server@latest"],
+        "environment": {
+          "FASTMCP_LOG_LEVEL": "ERROR"
+        }
+      }
+    }
+  }
+}
+```
+
+For Windows:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "awslabs-core-mcp-server": {
+        "type": "local",
+        "command": [
+          "uv",
+          "tool",
+          "run",
+          "--from",
+          "awslabs.core-mcp-server@latest",
+          "awslabs.core-mcp-server.exe"
+        ],
+        "environment": {
+          "FASTMCP_LOG_LEVEL": "ERROR"
+        }
+      }
+    }
+  }
+}
+```
+
+Servers connect automatically; set `"disabled": true` on a server to keep it configured without connecting it. Inside OpenCode, run `/mcps` to view and manage server connections.
 
 </details>
 
